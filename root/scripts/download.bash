@@ -58,6 +58,7 @@ Configuration () {
 		radarrmoviedata="$(echo "${radarrmovielist}" | jq -r ".[] | select(.id==$radarrid)")"
 		radarrmoviepath="$(echo "${radarrmoviedata}" | jq -r ".path")"
 		radarrmovierootpath="$(dirname "$radarrmoviepath")"
+		
 		if [ -d "$radarrmovierootpath" ]; then
 			echo "Radarr: Root Media Folder Found: $radarrmovierootpath"
 			error=0
@@ -200,6 +201,12 @@ DownloadTrailers () {
 		radarrmovieyear="$(echo "${radarrmoviedata}" | jq -r ".year")"
 		radarrmoviegenre="$(echo "${radarrmoviedata}" | jq -r ".genres | .[]" | head -n 1)"
 		radarrmoviefolder="$(basename "${radarrmoviepath}")"
+		
+		radarrmoviefile="$(echo "${radarrmoviedata}" | jq -r ".movieFile.relativePath")"
+		filename="$(echo "${radarrmoviefile%.*}")"
+		echo "File: $radarrmoviefile"		
+		echo "Filename: $filename"		
+		
 		radarrmovieostudio="$(echo "${radarrmoviedata}" | jq -r ".studio")"		
 		echo "$currentprocessid of $radarrmovietotal :: $radarrmovietitle"
 		
@@ -312,7 +319,7 @@ DownloadTrailers () {
 				folder="$(echo "${folder,,}" | sed 's/ *//g')"
 				if [ "$SINGLETRAILER" == "true" ]; then
 					if [ "$themoviedbvidetype" == "Trailer" ]; then
-						if find "$radarrmoviepath" -name "*-trailer.mkv" | read; then
+						if find "$radarrmoviepath" -name "*-trailer.*" | read; then
 							echo "$currentprocessid of $radarrmovietotal :: $radarrmovietitle :: $currentsubprocessid of $themoviedbvideoslistidscount :: $folder :: $themoviedbvidename :: Existing Trailer found, skipping..."
 							continue
 						fi
@@ -328,7 +335,7 @@ DownloadTrailers () {
 						fi
 					fi
 				fi
-				outputfile="$radarrmoviepath/$sanatizethemoviedbvidename-$folder.mkv"
+				outputfile="$radarrmoviepath/$filename-$folder.mkv"
 			fi			
 			
 			if [ -f "$outputfile" ]; then
