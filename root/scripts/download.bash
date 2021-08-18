@@ -58,7 +58,6 @@ Configuration () {
 		radarrmoviedata="$(echo "${radarrmovielist}" | jq -r ".[] | select(.id==$radarrid)")"
 		radarrmoviepath="$(echo "${radarrmoviedata}" | jq -r ".path")"
 		radarrmovierootpath="$(dirname "$radarrmoviepath")"
-		
 		if [ -d "$radarrmovierootpath" ]; then
 			echo "Radarr: Root Media Folder Found: $radarrmovierootpath"
 			error=0
@@ -204,8 +203,6 @@ DownloadTrailers () {
 		
 		radarrmoviefile="$(echo "${radarrmoviedata}" | jq -r ".movieFile.relativePath")"
 		filename="$(echo "${radarrmoviefile%.*}")"
-		echo "File: $radarrmoviefile"		
-		echo "Filename: $filename"		
 		
 		radarrmovieostudio="$(echo "${radarrmoviedata}" | jq -r ".studio")"		
 		echo "$currentprocessid of $radarrmovietotal :: $radarrmovietitle"
